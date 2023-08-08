@@ -84,7 +84,7 @@ class GitVersion:
 
 
 if __name__ == "__main__":
-    var = GitVersion("/home/malsaggaf/Documents/TestMakingGitRepo")
-    var.get_version_info()
+    var = GitVersion(os.getcwd())
+    print(var.get_version_info())
     
 
