@@ -65,7 +65,7 @@ class GitVersion:
             #     "%a %b %d %H:%M:%S %Y %z",
             # )
 
-        commit_date = self._exec_git("--no-pager show -s --date=local --format='%ad' --date=format:%d/%m/%Y-%H:%M:%S")
+        commit_date = self._exec_git("--no-pager show -s --date=local --format=%ad --date=format:%d/%m/%Y-%H:%M:%S")
 
         return {
             "GIT_COMMIT": commit,
@@ -106,6 +106,29 @@ class GitVersion:
 
 if __name__ == "__main__":
     var = GitVersion(os.getcwd())
+    file = open("soft_version.h","w")
+
+    gitDictionary = var.get_version_info()
+
+    dirtyFilesList = gitDictionary['DIRTY_FILES'].replace('\n', ', ')
+
+    file.write('#define GIT_COMMIT ' + f"\"{gitDictionary['GIT_COMMIT']}\"\n")
+    file.write('#define GIT_BRANCH ' + f"\"{gitDictionary['GIT_BRANCH']}\"\n")
+    file.write('#define VERSION ' + f"\"{gitDictionary['VERSION']}\"\n")
+    file.write('#define TAG_DISTANCE_FROM_HEAD ' + f"\"{gitDictionary['TAG_DISTANCE_FROM_HEAD']}\"\n")
+    file.write('#define BUILD_DIRTY ' + f"\"{gitDictionary['BUILD_DIRTY']}\"\n")
+    file.write('#define GIT_ORIGIN ' + f"\"{gitDictionary['GIT_ORIGIN']}\"\n")
+    file.write('#define GIT_COMMIT_DATE ' + f"\"{gitDictionary['GIT_COMMIT_DATE']}\"\n")
+
+
+
+    file.write('\n')
+    file.write('#warning ' + f"\" Following files are dirty: [{dirtyFilesList}]\"\n")
+
+
+    file.close()
+
+
     print(var.get_version_info())
     
 
